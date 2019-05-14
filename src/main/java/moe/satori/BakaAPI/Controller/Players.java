@@ -13,8 +13,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class Players {
-	public static HashMap<String, Object> getOnline(Map<String, String> params) {
+public class players {
+	public static HashMap<String, Object> online_list(Map<String, String> params) {
 		ArrayList<Object> playerlist = new ArrayList<>();
 		HashMap<String, Object> result = new HashMap<>();
 		Bukkit.getOnlinePlayers().forEach((player) -> {
@@ -22,6 +22,7 @@ public class Players {
 			p.put("name", player.getName());
 			p.put("uuid", player.getUniqueId().toString());
 			p.put("level", player.getLevel());
+			p.put("world", player.getWorld().getName());
 			p.put("health", player.getHealth());
 			p.put("display", player.getDisplayName());
 			p.put("ip", player.getAddress().getHostString());
@@ -32,7 +33,7 @@ public class Players {
 		return Const.SUCCESS(result);
 	}
 
-	public static HashMap<String, Object> kickPlayer(Map<String, String> params) {
+	public static HashMap<String, Object> kick(Map<String, String> params) {
 		final String playerName = params.get("username");
 		final String content = params.get("message");
 		final Player player = Bukkit.getPlayer(playerName);
@@ -51,7 +52,7 @@ public class Players {
 		return Const.SUCCESS();
 	}
 
-	public static HashMap<String, Object> sendMessage(Map<String, String> params) {
+	public static HashMap<String, Object> send_message(Map<String, String> params) {
 		String playerName = params.get("username");
 		String content = params.get("message");
 		Player player = Bukkit.getPlayer(playerName);
@@ -64,7 +65,7 @@ public class Players {
 		return Const.SUCCESS();
 	}
 
-	public static HashMap<String, Object> getInfo(Map<String, String> params) {
+	public static HashMap<String, Object> info(Map<String, String> params) {
 		HashMap<String, Object> result = new HashMap<>();
 		HashMap<String, Object> location = new HashMap<>();
 		HashMap<String,Object> exp = new HashMap<>();
