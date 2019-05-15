@@ -6,11 +6,15 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import fi.iki.elonen.NanoHTTPD;
+import org.bukkit.scheduler.BukkitTask;
+
+import javax.rmi.CORBA.Util;
 
 public class App extends NanoHTTPD {
 	Plugin plugin;
 	String password;
 	Boolean auth;
+	public static BukkitTask httpd;
 	
 	public App(Plugin plugin, HashMap<String, Object> ServerConfig) {
 		super((int) ServerConfig.get("port"));
@@ -22,7 +26,7 @@ public class App extends NanoHTTPD {
 	}
 
 	public void startService() {
-		Runnable rbq = new Runnable() {
+		Runnable httpd = new Runnable() {
 			public void run() {
 				try {
 					System.out.println("BakaAPI Service Running..");
@@ -30,9 +34,11 @@ public class App extends NanoHTTPD {
 				} catch (IOException ioe) {
 					System.err.println("Couldn't start server:\n" + ioe);
 				}
+
 			}
 		};
-		Bukkit.getScheduler().runTaskAsynchronously(plugin, rbq);
+		BukkitTask httpd_task = Bukkit.getScheduler().runTaskAsynchronously(plugin, httpd);
+		this.httpd = httpd_task;
 	}
 
 	@Override
@@ -50,24 +56,23 @@ public class App extends NanoHTTPD {
 		}
 		String response = "";
 		try {
+			if (this.auth == true) {
+				HashMap<String, Object> map = new HashMap<>();
+				if (!headers.containsKey("x-authorizetoken")) {
+					map.put("status", 401);
+					map.put("message", "Empty Token");
+					return newFixedLengthResponse(Response.Status.OK, "application/json", Utils.toJSON(map));
+				}
+				if (!Utils.checkToken(parms,this.password, headers)) {
+					map.put("status", 403);
+					map.put("message", "Token Verify Fail");
+					return newFixedLengthResponse(Response.Status.OK, "application/json", Utils.toJSON(map));
+				}
+			}
 			Object result = Utils.invokeController(parms.get("action"), parms.get("method"),
 					parms);
 			response = Utils.toJSON(result);
 
-//			if (!headers.containsKey("x-authorizetoken") && this.auth == true) {
-//				map.put("status", 401);
-//				map.put("msg", "Empty Token");
-//				response = Utils.toJSON(map);
-//			} else {
-//				if (Utils.checkToken((HashMap<String, String>) parms, this.password,
-//						(HashMap<String, String>) headers)) {
-//
-//				} else {
-//					map.put("status", 401);
-//					map.put("msg", "Token Verify Fail");
-//					response = Utils.toJSON(map);
-//				}
-//			}
 		} catch (Exception e) {
 			HashMap<String, Object> map = new HashMap<>();
 			map.put("status", 500);

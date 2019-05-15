@@ -2,6 +2,7 @@ package moe.satori.BakaAPI;
 
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import moe.satori.BakaAPI.App;
@@ -24,6 +25,7 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-
+		Bukkit.getLogger().info("Shutdowning HTTPD Task");
+		Bukkit.getScheduler().cancelTask(App.httpd.getTaskId());
 	}
 }

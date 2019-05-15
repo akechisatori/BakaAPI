@@ -92,7 +92,7 @@ public class Utils {
 		return new String(resultCharArray);
 	}
 
-	 public static String HttpBuildQuery(HashMap<String, String> map) {
+	 public static String HttpBuildQuery(Map<String, String> map) {
 		 final List<String> list = new ArrayList<>();
 		 for (String key : map.keySet()) {
 			 list.add(key + "=" + map.get(key)+ "&");
@@ -109,8 +109,8 @@ public class Utils {
 		 return content;
 	 }
 
-	public static boolean checkToken(HashMap<String, String> params, String password, HashMap<String, String> headers) {
-		String token = headers.get("x-authorizetoken");
+	public static boolean checkToken(Map<String, String> params, String password, Map<String, String> headers) {
+		String token = headers.get("x-authorizetoken").toUpperCase();
 		String query = HttpBuildQuery(params);
 		String sign = stringMD5(query + "@" + password);
 		return token.equals(sign);
