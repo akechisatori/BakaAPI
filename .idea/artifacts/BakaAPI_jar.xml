@@ -1,12 +1,16 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="BakaAPI:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/BakaAPI</output-path>
+    <properties id="ant-postprocessing">
+      <options enabled="true" />
+    </properties>
     <root id="archive" name="BakaAPI.jar">
       <element id="module-output" name="BakaAPI" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/nanohttpd/nanohttpd/2.3.1/nanohttpd-2.3.1.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar" path-in-jar="/" />
       <element id="file-copy" path="$PROJECT_DIR$/src/config.yml" />
       <element id="file-copy" path="$PROJECT_DIR$/src/plugin.yml" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/nanohttpd/nanohttpd/2.3.1/nanohttpd-2.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
