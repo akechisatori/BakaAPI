@@ -5,8 +5,6 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import moe.satori.BakaAPI.App;
-
 public class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
@@ -17,10 +15,6 @@ public class Main extends JavaPlugin {
 		ServerConfig.put("password", this.getConfig().getString("password"));
 		App app = new App(this, ServerConfig);
 		app.startService();
-	}
-
-	public static void main(String[] args) {
-
 	}
 
 	@Override

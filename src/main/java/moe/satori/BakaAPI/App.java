@@ -8,8 +8,6 @@ import org.bukkit.plugin.Plugin;
 import fi.iki.elonen.NanoHTTPD;
 import org.bukkit.scheduler.BukkitTask;
 
-import javax.rmi.CORBA.Util;
-
 public class App extends NanoHTTPD {
 	Plugin plugin;
 	String password;
