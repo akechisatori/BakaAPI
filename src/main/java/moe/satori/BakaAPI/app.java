@@ -8,13 +8,13 @@ import org.bukkit.plugin.Plugin;
 import fi.iki.elonen.NanoHTTPD;
 import org.bukkit.scheduler.BukkitTask;
 
-public class App extends NanoHTTPD {
+public class app extends NanoHTTPD {
 	Plugin plugin;
 	String password;
 	Boolean auth;
 	public static BukkitTask httpd;
 	
-	public App(Plugin plugin, HashMap<String, Object> ServerConfig) {
+	public app(Plugin plugin, HashMap<String, Object> ServerConfig) {
 		super((int) ServerConfig.get("port"));
 		System.out.println("BakaAPI Port: " + ServerConfig.get("port"));
 		System.out.println("Use Authorize: " + ServerConfig.get("auth"));
@@ -28,7 +28,7 @@ public class App extends NanoHTTPD {
 			public void run() {
 				try {
 					System.out.println("BakaAPI Service Running..");
-					App.super.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+					app.super.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
 				} catch (IOException ioe) {
 					System.err.println("Couldn't start server:\n" + ioe);
 				}
@@ -37,6 +37,9 @@ public class App extends NanoHTTPD {
 		};
 		BukkitTask httpd_task = Bukkit.getScheduler().runTaskAsynchronously(plugin, httpd);
 		this.httpd = httpd_task;
+	}
+	public Response responseJSON(Object map) {
+		return newFixedLengthResponse(Response.Status.OK, "application/json", gson.toJSON(map));
 	}
 
 	@Override
@@ -52,24 +55,25 @@ public class App extends NanoHTTPD {
 				e.printStackTrace();
 			}
 		}
-		String response = "";
 		try {
 			if (this.auth == true) {
 				HashMap<String, Object> map = new HashMap<>();
 				if (!headers.containsKey("x-authorizetoken")) {
-					map.put("status", 401);
-					map.put("message", "Empty Token");
-					return newFixedLengthResponse(Response.Status.OK, "application/json", Utils.toJSON(map));
+					return responseJSON(Map.of(
+							"status", 401,
+							"message","Empty Token"
+					));
 				}
-				if (!Utils.checkToken(parms,this.password, headers)) {
-					map.put("status", 403);
-					map.put("message", "Token Verify Fail");
-					return newFixedLengthResponse(Response.Status.OK, "application/json", Utils.toJSON(map));
+				if (!utils.checkToken(parms,this.password, headers)) {
+					return responseJSON(Map.of(
+							"status", 403,
+							"message", "Token Verify Fail"
+					));
 				}
 			}
-			Object result = Utils.invokeController(parms.get("action"), parms.get("method"),
+			Object result = utils.invokeController(parms.get("action"), parms.get("method"),
 					parms);
-			response = Utils.toJSON(result);
+			return responseJSON(result);
 
 		} catch (Exception e) {
 			HashMap<String, Object> map = new HashMap<>();
@@ -82,11 +86,8 @@ public class App extends NanoHTTPD {
 				map.put("exception",e.getCause().toString());
 				map.put("stack", e.getCause().getStackTrace());
 			}
-
-			response = Utils.toJSON(map);
-
+			return responseJSON(map);
 		}
-		return newFixedLengthResponse(Response.Status.OK, "application/json", response);
 	}
 
 }

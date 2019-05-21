@@ -18,27 +18,7 @@ import org.bukkit.Bukkit;
 import com.google.gson.*;
 import java.lang.reflect.Method;
 
-public class Utils {
-
-	private static Gson gson;
-
-	static {
-
-		GsonBuilder gb =  new GsonBuilder();
-		gb.serializeNulls();
-		gson = gb.create();
-
-	}
-
-	public static String toJSON(Object map) {
-		try {
-			String result = gson.toJson(map);
-			return result;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return e.getMessage();
-		}
-	}
+public class utils {
 
 	public static boolean isClass(String className) {
 		try {
@@ -119,18 +99,20 @@ public class Utils {
 		HashMap<String, Object> map = new HashMap<>();
 
 		if (action == null || method == null) {
-			map.put("status", 404);
-			return map;
+			return Map.of(
+					"status", 404
+			);
 		}
 		String classpath = "moe.satori.BakaAPI.Controller." + action;
 		if (!isClass(classpath)) {
-			map.put("status", 404);
-			map.put("message", "Controller `" + action + "` Not Found");
-			return map;
+			return Map.of(
+					"status", 404,
+					"message", "Controller `" + action + "` Not Found"
+			);
 		}
 		try {
 			Class<?> clz = Class.forName(classpath);
-			Object obj = clz.newInstance();
+			Object obj = clz.getConstructor().newInstance();
 			Method m = clz.getMethod(method, Map.class);
 			return  m.invoke(obj, params);
 		} catch (Exception e) {

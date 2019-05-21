@@ -1,13 +1,13 @@
 package moe.satori.BakaAPI.Controller;
 
-import moe.satori.BakaAPI.Const;
+import moe.satori.BakaAPI.consts;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.Map;
 
 public class server {
-    public static Map<String, Object> status(Map<String, String> params) {
+    public static Map status() {
         Runtime runtime = Runtime.getRuntime();
         ArrayList<Object> worlds = new ArrayList<>();
 
@@ -33,7 +33,7 @@ public class server {
             );
             worlds.add(world_result);
         });
-        return Const.SUCCESS(Map.of(
+        return consts.SUCCESS(Map.of(
                 "player", Map.of(
                         "max", Bukkit.getMaxPlayers(),
                         "online", Bukkit.getOnlinePlayers().size(),

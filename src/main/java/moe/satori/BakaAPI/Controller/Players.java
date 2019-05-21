@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import moe.satori.BakaAPI.Const;
+import moe.satori.BakaAPI.consts;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -32,7 +32,7 @@ public class players {
 		Map<String, Object> result = Map.of(
 			"online", playerlist
 		);
-		return Const.SUCCESS(result);
+		return consts.SUCCESS(result);
 	}
 
 	public static Map<String, Object> kick(Map<String, String> params) {
@@ -41,7 +41,7 @@ public class players {
 		final Player player = Bukkit.getPlayer(playerName);
 
 		if (player == null) {
-			return Const.USER_NOT_ONLINE();
+			return consts.USER_NOT_ONLINE();
 		}
 		Bukkit.getScheduler().runTask(Bukkit.getPluginManager().getPlugin("BakaAPI"), new Runnable() {
 			public void run() {
@@ -50,7 +50,7 @@ public class players {
 				}
 			}
 		});
-		return Const.SUCCESS();
+		return consts.SUCCESS();
 	}
 
 	public static Map<String, Object> send_message(Map<String, String> params) {
@@ -59,11 +59,11 @@ public class players {
 		Player player = Bukkit.getPlayer(playerName);
 
 		if (player == null) {
-			return Const.USER_NOT_ONLINE();
+			return consts.USER_NOT_ONLINE();
 		}
 
 		player.sendMessage(content);
-		return Const.SUCCESS();
+		return consts.SUCCESS();
 	}
 
 	public static Map<String, Object> info(Map<String, String> params) {
@@ -74,7 +74,7 @@ public class players {
 		Player player = Bukkit.getPlayer(playerName);
 
 		if (player == null) {
-			return Const.USER_NOT_ONLINE();
+			return consts.USER_NOT_ONLINE();
 		}
 
 		BigDecimal next_level_exp = new BigDecimal(player.getExp());
@@ -139,6 +139,6 @@ public class players {
 						"z",player.getLocation().getZ()
 				)
 		);
-		return Const.SUCCESS(result);
+		return consts.SUCCESS(result);
 	}
 }

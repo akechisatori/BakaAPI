@@ -3,7 +3,7 @@ package moe.satori.BakaAPI;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Const {
+public class consts {
     public static Map<String, Object> USER_NOT_ONLINE() {
         return Map.of(
                 "status", 200,
