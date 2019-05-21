@@ -1,4 +1,4 @@
 name: BakaAPI
-main: moe.satori.BakaAPI.Main
+main: moe.satori.BakaAPI.main
 version: 2.33
 api-version: 1.13
