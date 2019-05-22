@@ -9,7 +9,18 @@ public class consts {
                 "status", 200,
                 "message", "User Not Online",
                 "result", Map.of(
-                        "online", false
+                        "online", false,
+                        "exists", true
+                )
+        );
+    }
+    public static Map USER_NOT_EXISTS() {
+        return Map.of(
+                "status", 200,
+                "message", "User Not EXISTS",
+                "result", Map.of(
+                        "online", false,
+                        "exists", false
                 )
         );
     }

@@ -1,14 +1,12 @@
 package moe.satori.BakaAPI.Controller;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import moe.satori.BakaAPI.consts;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -70,11 +68,30 @@ public class players {
 		HashMap<String,Object> exp = new HashMap<>();
 		ArrayList<Object> itemlist = new ArrayList<>();
 		ArrayList<Map> potion_effect = new ArrayList<>();
-		String playerName = params.get("username");
-		Player player = Bukkit.getPlayer(playerName);
+		String playerUUID = params.get("uuid");
+		OfflinePlayer offline_player = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID));
+		Player player = offline_player.getPlayer();
+
+		if (!offline_player.hasPlayedBefore()) {
+			return consts.USER_NOT_EXISTS();
+		}
+
+		if (offline_player.isBanned()) {
+			return consts.SUCCESS(Map.of(
+					"firstlogin", offline_player.getFirstPlayed(),
+					"lastlogin", offline_player.getLastPlayed(),
+					"banned", offline_player.isBanned(),
+					"username", offline_player.getName()
+			));
+		}
 
 		if (player == null) {
-			return consts.USER_NOT_ONLINE();
+			return consts.SUCCESS(Map.of(
+					"lastlogin", offline_player.getLastPlayed(),
+					"firstlogin", offline_player.getFirstPlayed(),
+					"banned", offline_player.isBanned(),
+					"username", offline_player.getName()
+			));
 		}
 
 		BigDecimal next_level_exp = new BigDecimal(player.getExp());
@@ -110,7 +127,20 @@ public class players {
 		}
 		Map result = Map.of(
 				"online", player.isOnline(),
+				"lastlogin",offline_player.getLastPlayed(),
+				"banned", offline_player.isBanned(),
+				"firstlogin", offline_player.getFirstPlayed(),
+				"ip", player.getAddress().getHostString(),
+				"username", offline_player.getName(),
+				"display", player.getDisplayName(),
+				"world",player.getWorld().getName(),
+				"inventory", itemlist,
 				"stats", Map.of(
+						"location", Map.of(
+								"x", player.getLocation().getX(),
+								"y",player.getLocation().getY(),
+								"z",player.getLocation().getZ()
+						),
 						"health",Map.of(
 								"current", player.getHealth(),
 								"max", player.getAttribute(GENERIC_MAX_HEALTH).getValue()
@@ -127,16 +157,6 @@ public class players {
 						"flying", player.isFlying(),
 						"canfly", player.getAllowFlight(),
 						"gamemode",player.getGameMode().toString()
-				),
-				"ip", player.getAddress().getHostString(),
-				"uuid", player.getUniqueId().toString(),
-				"display", player.getDisplayName(),
-				"world",player.getWorld().getName(),
-				"inventory", itemlist,
-				"location", Map.of(
-						"x", player.getLocation().getX(),
-						"y",player.getLocation().getY(),
-						"z",player.getLocation().getZ()
 				)
 		);
 		return consts.SUCCESS(result);
