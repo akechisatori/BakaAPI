@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class server {
-    public static Map status() {
+    public static Map status(Map<String, Object> params) {
         Runtime runtime = Runtime.getRuntime();
         ArrayList<Object> worlds = new ArrayList<>();
 

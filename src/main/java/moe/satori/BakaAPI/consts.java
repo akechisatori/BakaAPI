@@ -1,5 +1,7 @@
 package moe.satori.BakaAPI;
 
+import com.google.gson.JsonObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +16,7 @@ public class consts {
                 )
         );
     }
-    public static Map USER_NOT_EXISTS() {
+    public static Map<String,Object> USER_NOT_EXISTS() {
         return Map.of(
                 "status", 200,
                 "message", "User Not EXISTS",

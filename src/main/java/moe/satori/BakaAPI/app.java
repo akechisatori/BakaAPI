@@ -13,6 +13,7 @@ public class app extends NanoHTTPD {
 	String password;
 	Boolean auth;
 	public static BukkitTask httpd;
+	public static String main_world;
 	
 	public app(Plugin plugin, HashMap<String, Object> ServerConfig) {
 		super((int) ServerConfig.get("port"));
@@ -21,6 +22,7 @@ public class app extends NanoHTTPD {
 		this.plugin = plugin;
 		this.password = (String) ServerConfig.get("password");
 		this.auth = (Boolean) ServerConfig.get("auth");
+		this.main_world = (String) ServerConfig.get("main_world");
 	}
 
 	public void startService() {

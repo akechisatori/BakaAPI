@@ -1,9 +1,13 @@
 package moe.satori.BakaAPI.Controller;
 
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
 
+import com.google.gson.JsonObject;
+import moe.satori.BakaAPI.app;
 import moe.satori.BakaAPI.consts;
+import moe.satori.BakaAPI.gson;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -62,6 +66,35 @@ public class players {
 
 		player.sendMessage(content);
 		return consts.SUCCESS();
+	}
+
+	public static Map<String, Object> stats(Map<String, String> params) {
+		HashMap<String,Object> result = new HashMap<>();
+		String playerUUID = params.get("uuid");
+		OfflinePlayer offline_player = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID));
+
+		String folder = Bukkit.getWorld(app.main_world).getWorldFolder().getPath();
+		String stats_path = folder + "/stats/" + playerUUID + ".json";
+		File stats_file = new File(stats_path);
+		if (!stats_file.exists()) {
+			return consts.USER_NOT_EXISTS();
+		}
+		try {
+			FileInputStream file = new FileInputStream(stats_file);
+			BufferedReader buf = new BufferedReader(new InputStreamReader(file));
+			String line = buf.readLine(); StringBuilder sb = new StringBuilder();
+			while(line != null){
+				sb.append(line).append("\n"); line = buf.readLine();
+			}
+			JsonObject json = gson.parseJSON(sb.toString());
+			return consts.SUCCESS(Map.of(
+					"stats", json.get("stats").getAsJsonObject(),
+					"version", json.get("DataVersion").getAsInt()
+			));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return consts.USER_NOT_EXISTS();
+		}
 	}
 
 	public static Map<String, Object> info(Map<String, String> params) {
