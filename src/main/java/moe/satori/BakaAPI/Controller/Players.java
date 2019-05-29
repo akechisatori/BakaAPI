@@ -69,7 +69,6 @@ public class players {
 	}
 
 	public static Map<String, Object> stats(Map<String, String> params) {
-		HashMap<String,Object> result = new HashMap<>();
 		String playerUUID = params.get("uuid");
 		OfflinePlayer offline_player = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID));
 
@@ -98,7 +97,6 @@ public class players {
 	}
 
 	public static Map<String, Object> info(Map<String, String> params) {
-		HashMap<String,Object> exp = new HashMap<>();
 		ArrayList<Object> itemlist = new ArrayList<>();
 		ArrayList<Map> potion_effect = new ArrayList<>();
 		String playerUUID = params.get("uuid");
