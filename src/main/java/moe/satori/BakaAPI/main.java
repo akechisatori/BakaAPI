@@ -1,17 +1,12 @@
 package moe.satori.BakaAPI;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
-import com.google.gson.JsonObject;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class main extends JavaPlugin {
+	public static long start_time;
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
@@ -27,6 +22,11 @@ public class main extends JavaPlugin {
 	public static void main(String args[]) {
 		HashMap<String,Object> result = new HashMap<>();
 
+	}
+
+	@Override
+	public void onLoad() {
+		start_time = System.currentTimeMillis() / 1000L;
 	}
 
 	@Override

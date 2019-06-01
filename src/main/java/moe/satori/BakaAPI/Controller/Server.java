@@ -1,6 +1,7 @@
 package moe.satori.BakaAPI.Controller;
 
 import moe.satori.BakaAPI.consts;
+import moe.satori.BakaAPI.main;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class server {
                         "total", runtime.totalMemory(),
                         "free", runtime.freeMemory()
                 ),
+                "start_time", main.start_time,
                 "worlds", worlds,
                 "version", Bukkit.getVersion()
         ));
