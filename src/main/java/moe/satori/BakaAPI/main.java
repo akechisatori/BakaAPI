@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class main extends JavaPlugin {
 	public static long start_time;
+	public static app app;
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
@@ -15,7 +16,7 @@ public class main extends JavaPlugin {
 		ServerConfig.put("auth", this.getConfig().getBoolean("auth"));
 		ServerConfig.put("main_world", this.getConfig().getString("main_world"));
 		ServerConfig.put("password", this.getConfig().getString("password"));
-		app app = new app(this, ServerConfig);
+		app = new app(this, ServerConfig);
 		app.startService();
 	}
 
@@ -32,6 +33,7 @@ public class main extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		Bukkit.getLogger().info("Shutdowning HTTPD Task");
+		app.stop();
 		Bukkit.getScheduler().cancelTask(app.httpd.getTaskId());
 	}
 }
