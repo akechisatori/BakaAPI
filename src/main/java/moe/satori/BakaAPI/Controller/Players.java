@@ -68,6 +68,45 @@ public class players {
 		return consts.SUCCESS();
 	}
 
+	public static Map<String,Object> batch_stats(Map<String, String> params) {
+		String[] uuids = params.get("uuids").split(",");
+		ArrayList<Object> stats_list = new ArrayList<>();
+		for (String uuid : uuids) {
+			Map result = stats(Map.of(
+					"uuid", uuid
+			));
+			if (result.get("status").equals(200)) {
+				stats_list.add(Map.of(
+						"uuid", uuid,
+						"data", result.get("data")
+
+				));
+			}
+		}
+		return consts.SUCCESS(Map.of(
+				"results", stats_list
+		));
+	}
+	public static Map<String,Object> batch_info(Map<String, String> params) {
+		String[] uuids = params.get("uuids").split(",");
+		ArrayList<Object> stats_list = new ArrayList<>();
+		for (String uuid : uuids) {
+			Map result = info(Map.of(
+					"uuid", uuid
+			));
+			if (result.get("status").equals(200)) {
+				stats_list.add(Map.of(
+						"uuid", uuid,
+						"data", result.get("data")
+
+				));
+			}
+		}
+		return consts.SUCCESS(Map.of(
+				"results", stats_list
+		));
+	}
+
 	public static Map<String, Object> stats(Map<String, String> params) {
 		String playerUUID = params.get("uuid");
 		OfflinePlayer offline_player = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID));
