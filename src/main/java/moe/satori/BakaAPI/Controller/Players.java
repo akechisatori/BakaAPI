@@ -18,7 +18,7 @@ import org.bukkit.potion.PotionEffect;
 import static org.bukkit.attribute.Attribute.*;
 
 public class players {
-	public static Map<String, Object> online_list(Map<String, String> params) {
+	public static Map<String, Object> online_list(Map<String, List<String>> params) {
 		ArrayList<Object> playerlist = new ArrayList<>();
 		Bukkit.getOnlinePlayers().forEach((player) -> {
 			Map<String,Object> p = Map.of(
@@ -37,9 +37,9 @@ public class players {
 		return consts.SUCCESS(result);
 	}
 
-	public static Map<String, Object> kick(Map<String, String> params) {
-		final String playerName = params.get("username");
-		final String message = params.get("message");
+	public static Map<String, Object> kick(Map<String, List<String>> params) {
+		final String playerName = params.get("username").get(0);
+		final String message = params.get("message").get(0);
 		final Player player = Bukkit.getPlayer(playerName);
 
 		if (player == null) {
@@ -55,9 +55,9 @@ public class players {
 		return consts.SUCCESS();
 	}
 
-	public static Map<String, Object> send_message(Map<String, String> params) {
-		String playerName = params.get("username");
-		String content = params.get("message");
+	public static Map<String, Object> send_message(Map<String, List<String>> params) {
+		String playerName = params.get("username").get(0);
+		String content = params.get("message").get(0);
 		Player player = Bukkit.getPlayer(playerName);
 
 		if (player == null) {
@@ -68,46 +68,59 @@ public class players {
 		return consts.SUCCESS();
 	}
 
-	public static Map<String,Object> batch_stats(Map<String, String> params) {
-		String[] uuids = params.get("uuids").split(",");
+	public static Map<String,Object> batch_stats(Map<String, List<String>> params) {
+		String[] uuids = params.get("uuids").get(0).split(",");
 		ArrayList<Object> stats_list = new ArrayList<>();
 		for (String uuid : uuids) {
 			Map result = stats(Map.of(
 					"uuid", uuid
 			));
-			if (result.get("status").equals(200)) {
-				stats_list.add(Map.of(
-						"uuid", uuid,
-						"data", result.get("data")
+            if (result == null) {
+                stats_list.add(Map.of(
+                        "exists", false,
+                        "uuid", uuid
 
-				));
-			}
+                ));
+                continue;
+            }
+            stats_list.add(Map.of(
+                    "exists", true,
+                    "uuid", uuid,
+                    "data", result
+
+            ));
 		}
 		return consts.SUCCESS(Map.of(
 				"results", stats_list
 		));
 	}
-	public static Map<String,Object> batch_info(Map<String, String> params) {
-		String[] uuids = params.get("uuids").split(",");
+	public static Map<String,Object> batch_info(Map<String, List<String>> params) {
+		String[] uuids = params.get("uuids").get(0).split(",");
 		ArrayList<Object> stats_list = new ArrayList<>();
 		for (String uuid : uuids) {
 			Map result = info(Map.of(
 					"uuid", uuid
 			));
-			if (result.get("status").equals(200)) {
-				stats_list.add(Map.of(
-						"uuid", uuid,
-						"data", result.get("data")
+			if (result == null) {
+                stats_list.add(Map.of(
+                        "exists", false,
+                        "uuid", uuid
+                ));
+			    continue;
+            }
+            stats_list.add(Map.of(
+                    "exists", true,
+                    "uuid", uuid,
+                    "data", result
 
-				));
-			}
+            ));
 		}
 		return consts.SUCCESS(Map.of(
 				"results", stats_list
 		));
 	}
 
-	public static Map<String, Object> stats(Map<String, String> params) {
+	private static Map<String, Object> stats(Map<String, String> params) {
 		String playerUUID = params.get("uuid");
 		OfflinePlayer offline_player = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID));
 
@@ -115,7 +128,7 @@ public class players {
 		String stats_path = folder + "/stats/" + playerUUID + ".json";
 		File stats_file = new File(stats_path);
 		if (!stats_file.exists()) {
-			return consts.USER_NOT_EXISTS();
+			return null;
 		}
 		try {
 			FileInputStream file = new FileInputStream(stats_file);
@@ -125,17 +138,18 @@ public class players {
 				sb.append(line).append("\n"); line = buf.readLine();
 			}
 			JsonObject json = gson.parseJSON(sb.toString());
-			return consts.SUCCESS(Map.of(
-					"stats", json.get("stats").getAsJsonObject(),
-					"version", json.get("DataVersion").getAsInt()
-			));
+			return Map.of(
+			        "name", info(Map.of("uuid", playerUUID)).get("username"),
+                    "stats", json.get("stats").getAsJsonObject(),
+                    "version", json.get("DataVersion").getAsInt()
+            );
 		} catch (Exception e) {
 			e.printStackTrace();
-			return consts.USER_NOT_EXISTS();
+			return null;
 		}
 	}
 
-	public static Map<String, Object> info(Map<String, String> params) {
+	private static Map<String, Object> info(Map<String, String> params) {
 		ArrayList<Object> itemlist = new ArrayList<>();
 		ArrayList<Map> potion_effect = new ArrayList<>();
 		String playerUUID = params.get("uuid");
@@ -143,25 +157,25 @@ public class players {
 		Player player = offline_player.getPlayer();
 
 		if (!offline_player.hasPlayedBefore()) {
-			return consts.USER_NOT_EXISTS();
+			return null;
 		}
 
 		if (offline_player.isBanned()) {
-			return consts.SUCCESS(Map.of(
-					"firstlogin", offline_player.getFirstPlayed(),
-					"lastlogin", offline_player.getLastPlayed(),
-					"banned", offline_player.isBanned(),
-					"username", offline_player.getName()
-			));
+			return Map.of(
+                    "firstlogin", offline_player.getFirstPlayed(),
+                    "lastlogin", offline_player.getLastPlayed(),
+                    "banned", offline_player.isBanned(),
+                    "username", offline_player.getName()
+            );
 		}
 
 		if (player == null) {
-			return consts.SUCCESS(Map.of(
-					"lastlogin", offline_player.getLastPlayed(),
-					"firstlogin", offline_player.getFirstPlayed(),
-					"banned", offline_player.isBanned(),
-					"username", offline_player.getName()
-			));
+			return Map.of(
+                    "lastlogin", offline_player.getLastPlayed(),
+                    "firstlogin", offline_player.getFirstPlayed(),
+                    "banned", offline_player.isBanned(),
+                    "username", offline_player.getName()
+            );
 		}
 
 		BigDecimal next_level_exp = new BigDecimal(player.getExp());
@@ -229,6 +243,6 @@ public class players {
 						"gamemode",player.getGameMode().toString()
 				)
 		);
-		return consts.SUCCESS(result);
+		return result;
 	}
 }

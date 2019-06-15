@@ -2,6 +2,7 @@ package moe.satori.BakaAPI;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -46,17 +47,18 @@ public class app extends NanoHTTPD {
 
 	@Override
 	public Response serve(IHTTPSession session) {
+		Map<String, List<String>> parms = session.getParameters();
 
-		Map<String, String> parms = session.getParms();
 		Map<String, String> headers = session.getHeaders();
 		Method method = session.getMethod();
 		if (Method.POST.equals(method)) {
 			try {
-				session.parseBody(parms);
+				session.parseBody(session.getParms());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+
 		try {
 			if (this.auth == true) {
 				HashMap<String, Object> map = new HashMap<>();
@@ -73,7 +75,7 @@ public class app extends NanoHTTPD {
 					));
 				}
 			}
-			Object result = utils.invokeController(parms.get("action"), parms.get("method"),
+			Object result = utils.invokeController(parms.get("action").get(0), parms.get("method").get(0),
 					parms);
 			return responseJSON(result);
 

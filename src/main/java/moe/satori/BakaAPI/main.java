@@ -1,6 +1,8 @@
 package moe.satori.BakaAPI;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,7 +23,6 @@ public class main extends JavaPlugin {
 	}
 
 	public static void main(String args[]) {
-		HashMap<String,Object> result = new HashMap<>();
 
 	}
 

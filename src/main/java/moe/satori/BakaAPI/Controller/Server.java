@@ -5,10 +5,11 @@ import moe.satori.BakaAPI.main;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class server {
-    public static Map status(Map<String, Object> params) {
+    public static Map status(Map<String, List<String>> params) {
         Runtime runtime = Runtime.getRuntime();
         ArrayList<Object> worlds = new ArrayList<>();
 

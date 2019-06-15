@@ -72,10 +72,10 @@ public class utils {
 		return new String(resultCharArray);
 	}
 
-	 public static String HttpBuildQuery(Map<String, String> map) {
+	 public static String HttpBuildQuery(Map<String, List<String>> map) {
 		 final List<String> list = new ArrayList<>();
 		 for (String key : map.keySet()) {
-			 list.add(key + "=" + map.get(key)+ "&");
+			 list.add(key + "=" + map.get(key).get(0)+ "&");
 		 }
 		 final int size = list.size();
 		 final String[] arrayToSort = list.toArray(new String[size]);
@@ -89,13 +89,16 @@ public class utils {
 		 return content;
 	 }
 
-	public static boolean checkToken(Map<String, String> params, String password, Map<String, String> headers) {
+	public static boolean checkToken(Map<String, List<String>> params, String password, Map<String, String> headers) {
 		String token = headers.get("x-authorizetoken").toUpperCase();
 		String query = HttpBuildQuery(params);
 		String sign = stringMD5(query + "@" + password);
+		System.out.println("Input Sign:" + token);
+		System.out.println("Query String: " + query);
+		System.out.println("Real Sign: " + sign);
 		return token.equals(sign);
 	}
-	public static Object invokeController(String action, String method, Map<String, String> params) {
+	public static Object invokeController(String action, String method, Map<String, List<String>> params) {
 		HashMap<String, Object> map = new HashMap<>();
 
 		if (action == null || method == null) {
