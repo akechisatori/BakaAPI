@@ -93,9 +93,9 @@ public class utils {
 		String token = headers.get("x-authorizetoken").toUpperCase();
 		String query = HttpBuildQuery(params);
 		String sign = stringMD5(query + "@" + password);
-		System.out.println("Input Sign:" + token);
-		System.out.println("Query String: " + query);
-		System.out.println("Real Sign: " + sign);
+//		System.out.println("Input Sign:" + token);
+//		System.out.println("Query String: " + query);
+//		System.out.println("Real Sign: " + sign);
 		return token.equals(sign);
 	}
 	public static Object invokeController(String action, String method, Map<String, List<String>> params) {
